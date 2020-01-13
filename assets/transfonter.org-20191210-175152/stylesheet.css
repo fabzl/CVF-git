@@ -1,0 +1,8 @@
+@font-face {
+    font-family: 'Patrick Hand SC';
+    src: url('PatrickHandSC-Regular.woff2') format('woff2'),
+        url('PatrickHandSC-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
