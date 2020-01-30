@@ -19,25 +19,36 @@ import PropTypes from 'prop-types';
 // 	}));
 // a little function to help us with reordering the result
 
-const DragDropContext = styled.div``;
-const Draggable = styled.div``;
-const Droppable = styled.div`
-	width: 100vw;
-	height: 20vh;
-	border: 1px solid goldenrod;
-	top: 20vh;
-	position: absolute;
-	background-color: #003334;
+const Arena = styled.div`
+	width: 500px;
+	height: 100vh;
+	background-color:blue;
+	float:left;
+
+`;
+const Mano = styled.div`
+	width: 50vw;
+	background-color:purple;
+	float:left;
 `;
 
-const Arena = styled.div`
-	width: 100vw;
-	height: 20vh;
-	border: 1px solid goldenrod;
-	top: 0;
-	position: absolute;
-	background-color: #330000;
+const DragDropContext = styled.div`
+
 `;
+const Droppable = styled.div`
+
+`;
+const Draggable = styled.div`
+	 background-color:red; padding:10px; margin:10px;
+`;
+
+const DropItem = styled.div`
+	 width:140px;
+	 height:200px;
+	 padding:10px; margin:10px;
+	 background-color:white;
+`;
+
 
 const ArenaItem = styled.div`border: 1px solid goldenrod;`;
 
@@ -86,7 +97,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 	margin: `0 ${grid}px 0 0`,
 	// change background colour if dragging
 	// background: isDragging ? 'lightgreen' : 'transparent',
-	width: `${100 / 7}` + 'vw',
+	width: `${100 / 10}` + 'vw',
 
 	// styles we need to apply on draggables
 	...draggableStyle
@@ -195,19 +206,25 @@ class CuicosVsFlaitesBoard extends React.Component {
 		return this.drawCard(this.state.images[cardNum]);
 	}
 
+	/*---------------------------------------------------*/
+
 	allowDrop(ev) {
 		ev.preventDefault();
-	}
-
+	  }
+	  
 	drag(ev) {
-		ev.dataTransfer.setData('text', ev.target.id);
-	}
-
+		console.log("drag",ev)
+		ev.dataTransfer.setData("text", ev.target.id);
+	  }
+	  
 	drop(ev) {
 		ev.preventDefault();
-		var data = ev.dataTransfer.getData('text');
-		ev.target.appendChild(document.getElementById(data));
+		
+		ev.target.appendChild(Card.lastID); 
+	  
 	}
+
+
 
 	render() {
 		let winner = '';
@@ -228,61 +245,32 @@ class CuicosVsFlaitesBoard extends React.Component {
 		return (
 			<div>
 				<div id="board">
-					<P1NameHolder>
-						<h2 className="P1-score"> {this.props.G.p1Name + ' ' + this.props.G.p1Brigidez}</h2>
-					</P1NameHolder>
-					<P2NameHolder>
-						<h2 className="P2-score"> {this.props.G.p2Name + this.props.G.p2Brigidez}</h2>
-					</P2NameHolder>
+					
+						
+						<Mano>
 
-					<P1LukasHolder>
-						<h2 className="P1-lukas"> {this.props.G.p1Lukas}</h2>
-					</P1LukasHolder>
-					<P2_LukasHolder>
-						<h2 className="P2-lukas"> {this.props.G.p2Lukas}</h2>
-					</P2_LukasHolder>
+						{ 
+						//odio las funciones de arrow esa huea era innecesaria.
+						this.state.items.map((item, index) => (
+										
+							<Card id={item.id}  key={item.id} src={item.content.props.src}></Card>
+ 
+						))
+						}
 
-					<DragDropContext onDragEnd={this.onDragEnd}>
-						{/* <Droppable droppableId="droppable2" direction="horizontal" /> */}
-						<Arena onDrop={this.drop} ondragover={this.allowDrop}>
-							{/* {this.state.arenaItems.map((item, index) => (
-							<ArenaItem key={item.id} draggableId={item.id} index={index} />
-						))} */}
+						</Mano>
+
+						<Arena>
+
+							{ //drop culiao feo }
+							<DropItem onDrop={this.drop} onDragOver={this.allowDrop}></DropItem>
+							<DropItem onDrop={this.drop} onDragOver={this.allowDrop}></DropItem>
+							<DropItem onDrop={this.drop} onDragOver={this.allowDrop}></DropItem>
+							<DropItem onDrop={this.drop} onDragOver={this.allowDrop}></DropItem>
+							
 						</Arena>
+						
 
-						<Droppable droppableId="droppable" direction="horizontal">
-							{(provided, snapshot) => (
-								<div
-									ref={provided.innerRef}
-									style={getListStyle(snapshot.isDraggingOver)}
-									{...provided.droppableProps}
-								>
-									{this.state.items.map((item, index) => (
-										<Draggable key={item.id} draggableId={item.id} index={index}>
-											{(provided, snapshot) => (
-												<div
-													ref={provided.innerRef}
-													{...provided.draggableProps}
-													{...provided.dragHandleProps}
-													style={getItemStyle(
-														snapshot.isDragging,
-														provided.draggableProps.style
-													)}
-												>
-													{item.content}
-												</div>
-											)}
-										</Draggable>
-									))}
-									{provided.placeholder}
-									no{' '}
-								</div>
-							)}
-						</Droppable>
-					</DragDropContext>
-
-					{/*  */}
-					{/* <tbody>{tbody}</tbody> */}
 				</div>
 				{winner}
 			</div>
