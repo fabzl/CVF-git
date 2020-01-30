@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Card from './Card';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+// import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PropTypes from 'prop-types';
 
 // mind to add react reavel
@@ -19,10 +19,24 @@ import PropTypes from 'prop-types';
 // 	}));
 // a little function to help us with reordering the result
 
+const DragDropContext = styled.div``;
+const Draggable = styled.div``;
+const Droppable = styled.div`
+	width: 100vw;
+	height: 20vh;
+	border: 1px solid goldenrod;
+	top: 20vh;
+	position: absolute;
+	background-color: #003334;
+`;
+
 const Arena = styled.div`
 	width: 100vw;
 	height: 20vh;
 	border: 1px solid goldenrod;
+	top: 0;
+	position: absolute;
+	background-color: #330000;
 `;
 
 const ArenaItem = styled.div`border: 1px solid goldenrod;`;
@@ -181,6 +195,20 @@ class CuicosVsFlaitesBoard extends React.Component {
 		return this.drawCard(this.state.images[cardNum]);
 	}
 
+	allowDrop(ev) {
+		ev.preventDefault();
+	}
+
+	drag(ev) {
+		ev.dataTransfer.setData('text', ev.target.id);
+	}
+
+	drop(ev) {
+		ev.preventDefault();
+		var data = ev.dataTransfer.getData('text');
+		ev.target.appendChild(document.getElementById(data));
+	}
+
 	render() {
 		let winner = '';
 
@@ -216,7 +244,7 @@ class CuicosVsFlaitesBoard extends React.Component {
 
 					<DragDropContext onDragEnd={this.onDragEnd}>
 						{/* <Droppable droppableId="droppable2" direction="horizontal" /> */}
-						<Arena>
+						<Arena onDrop={this.drop} ondragover={this.allowDrop}>
 							{/* {this.state.arenaItems.map((item, index) => (
 							<ArenaItem key={item.id} draggableId={item.id} index={index} />
 						))} */}
@@ -247,6 +275,7 @@ class CuicosVsFlaitesBoard extends React.Component {
 										</Draggable>
 									))}
 									{provided.placeholder}
+									no{' '}
 								</div>
 							)}
 						</Droppable>
